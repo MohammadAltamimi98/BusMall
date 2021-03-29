@@ -4,17 +4,14 @@ let middleIndex;
 let rightIndex;
 let votesArray=[];
 let viewsArray=[];
-let attempt=1;
-let maxAttempts=5;
-
-
-
-
+let attempt=0;
+let maxAttempts=24;
+let array=[];
 
 const imgSection=document.getElementById('imagesSection');
-const leftImg=document.getElementById('left-img');
-const middleImg=document.getElementById('middle-img');
-const rightImg=document.getElementById('right-img');
+const leftImg=document.getElementById('leftImg');
+const middleImg=document.getElementById('middleImg');
+const rightImg=document.getElementById('rightImg');
 
 
 const ItemsNames=['bag','banana','bathroom','boots','breakfast','bubblegum','chair','cthulhu','dog-duck','dragon','pen','pet-sweep','scissors','shark','sweep','tauntaun','unicorn','usb','water-can','wine-glass'];
@@ -24,6 +21,9 @@ const ItemsNames=['bag','banana','bathroom','boots','breakfast','bubblegum','cha
 function getRandomArNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
+
+
+
 
 
 // constructor function
@@ -37,57 +37,73 @@ function Item(name){
 
 Item.all=[];
 
+
 for(let i =0;i<ItemsNames.length;i++){
   new Item(ItemsNames[i]);
 }
 console.log(Item.all);
 
 
+
+
+
 function render(){
 
   leftIndex=getRandomArNumber(0,((Item.all.length)-1));
-  leftImg.src = Item.all[leftIndex].path;
-  leftImg.alt=Item.all[leftIndex].name;
-  leftImg.title=Item.all[leftIndex].name;
-  Item.all[leftIndex].views++;
+  middleIndex=getRandomArNumber(0,(Item.all.length-1));
+  rightIndex=getRandomArNumber(0,(Item.all.length-1));
+
+  if(leftIndex=== middleIndex|| leftIndex=== rightIndex|| middleIndex===rightIndex){
+    render();
+  }
+  else if (array.includes(leftIndex)){
+    render();
+  }
+  else if (array.includes(middleIndex)){
+    render();
+  }
+  else if (array.includes(rightIndex)){
+    render();
+  }else{
+
+    array=[];
+    leftImg.src = Item.all[leftIndex].path;
+    leftImg.alt=Item.all[leftIndex].name;
+    leftImg.title=Item.all[leftIndex].name;
+    Item.all[leftIndex].views++;
+    array.push(Number(leftIndex));
 
 
-  do { middleIndex=getRandomArNumber(0,Item.all.length-1);
     middleImg.src = Item.all[middleIndex].path;
     middleImg.alt=Item.all[middleIndex].name;
     middleImg.title=Item.all[middleIndex].name;
-  } while(middleIndex===leftIndex);
-  Item.all[middleIndex].views++;
+    Item.all[middleIndex].views++;
+    array.push(Number(middleIndex));
 
-  do{
-    rightIndex=getRandomArNumber(0,Item.all.length-1);
     rightImg.src = Item.all[rightIndex].path;
     rightImg.alt=Item.all[rightIndex].name;
-    rightImg.title=Item.all[rightIndex].name;}
-  while(rightIndex===middleIndex|| rightIndex=== leftIndex);
-  Item.all[rightIndex].views++;
-
-
-
-
-
-  // console.log(leftIndex);
-  // console.log(middleIndex);
-  // console.log(rightIndex);
+    rightImg.title=Item.all[rightIndex].name;
+    Item.all[rightIndex].views++;
+    array.push(Number(rightIndex));
+  }
 }
+
+render();
 
 
 imgSection.addEventListener('click', handleClick);
 
 function handleClick (event){
+
   if (event.target.id !== 'imagesSection'){
+
     if (attempt<maxAttempts){
       attempt++;
       if (event.target.id === rightImg.id){
         Item.all[rightIndex].votes++;
       }
-      // debugger;
-      if (event.target.id === middleImg.id){
+
+      else if (event.target.id === middleImg.id){
         Item.all[middleIndex].votes++;
       }
 
@@ -96,36 +112,52 @@ function handleClick (event){
       }
       render();
 
-    } else{
+
+    }
+    else
+    {
+
       if (event.target.id === rightImg.id){
         Item.all[rightIndex].votes++;
       }
-      // debugger;
-      if (event.target.id === middleImg.id){
+
+      else if (event.target.id === middleImg.id){
         Item.all[middleIndex].votes++;
       }
 
       else {
-        Item.all[leftIndex].votes++;
-      }
+        Item.all[leftIndex].votes++;}
+
 
       let ulEl=document.getElementById('listResult');
       let liEl;
-      for(let i=0;i<Item.all.length;i++){
+      for(let i=0;i<Item.all.length-1;i++){
         votesArray.push(Item.all[i].votes);
         viewsArray.push(Item.all[i].views);
-        // console.log(votesArray,viewsArray);
+        console.log(votesArray,viewsArray);
 
         liEl=document.createElement('li');
         liEl.textContent=`${Item.all[i].name} has ${Item.all[i].votes} votes and ${Item.all[i].views} views.`;
         ulEl.appendChild(liEl);
       }
+      console.log(viewsArray);
+      console.log(votesArray);
       imagesSection.removeEventListener('click', handleClick);
       chartRender();
 
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 function chartRender(){
   let ctx = document.getElementById('myChart').getContext('2d');
@@ -155,4 +187,4 @@ function chartRender(){
     options: {}
   });
 }
-render();
+console.log(Item.all[5].path);
