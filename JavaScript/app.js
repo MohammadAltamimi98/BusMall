@@ -41,7 +41,7 @@ Item.all=[];
 for(let i =0;i<ItemsNames.length;i++){
   new Item(ItemsNames[i]);
 }
-console.log(Item.all);
+// console.log(Item.all);
 
 
 
@@ -55,6 +55,7 @@ function render(){
 
   if(leftIndex=== middleIndex|| leftIndex=== rightIndex|| middleIndex===rightIndex){
     render();
+
   }
   else if (array.includes(leftIndex)){
     render();
@@ -65,8 +66,12 @@ function render(){
   else if (array.includes(rightIndex)){
     render();
   }else{
-
     array=[];
+
+    array.push(leftIndex);
+    array.push(middleIndex);
+    array.push(rightIndex);
+    console.log(array);
     leftImg.src = Item.all[leftIndex].path;
     leftImg.alt=Item.all[leftIndex].name;
     leftImg.title=Item.all[leftIndex].name;
@@ -134,14 +139,14 @@ function handleClick (event){
       for(let i=0;i<Item.all.length-1;i++){
         votesArray.push(Item.all[i].votes);
         viewsArray.push(Item.all[i].views);
-        console.log(votesArray,viewsArray);
+        // console.log(votesArray,viewsArray);
 
         liEl=document.createElement('li');
         liEl.textContent=`${Item.all[i].name} has ${Item.all[i].votes} votes and ${Item.all[i].views} views.`;
         ulEl.appendChild(liEl);
       }
-      console.log(viewsArray);
-      console.log(votesArray);
+      // console.log(viewsArray);
+      // console.log(votesArray);
       imagesSection.removeEventListener('click', handleClick);
       chartRender();
 
@@ -187,4 +192,4 @@ function chartRender(){
     options: {}
   });
 }
-console.log(Item.all[5].path);
+// console.log(Item.all[5].path);
